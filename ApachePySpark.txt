@@ -1,0 +1,368 @@
+%-------------------------------------- Apache PySpark --------------------------------------------%
+
+https://github.com/coder2j/pyspark-tutorial
+
+https://www.youtube.com/watch?v=EB8lfdxpirM
+
+## Content 
+- Spark Introduction
+- Spark Installation
+- SparkContext vs SparkSession
+- Create SparkContext in PySpark
+- Create SparkSession in PySpark
+- Spark RDD Transformations and Actions
+- Spark DataFrame Intro
+- Create Spark DataFrame
+- Spark DataFrame Operations
+- Spark SQL and SQL Operations
+
+## Spark:-
+- Open-Source distributed computing system for big data processing.
+- Unified analytics engine for processing large-scale datasets.
+- Offers high-speed , in-memory processing capabilities, distributed processing.
+- Handles complex data processing tasks, data transformation, machine learning, graph processing, and real-time stream processing.
+- Fault Tolerance and reliability
+- In-memory processing for improved performance.
+- Seamless integration with various data sources and frameworks
+- Extensive libraries for machine learning, graph processing, and streaming analytics. 
+- Provides APIs for Python, Java, Scala and R.
+
+## Download and Installation of Apache Spark;
+
+--------------------------------------------------------------------
+## Creating python environment;
+>> python -m venv .pyspark-env
+
+# Activate the environment;
+>> .pyspark-env\Scripts\activate
+
+D:\>cd Data_Engineering\PySpark
+
+D:\Data_Engineering\PySpark>python -m venv .pyspark-env
+
+D:\Data_Engineering\PySpark>.pyspark-env\Scripts\activate
+
+(.pyspark-env) D:\Data_Engineering\PySpark>
+
+---------------------------------------------------------------
+(base) PS C:\WINDOWS\system32> conda env list
+# conda environments:
+#
+                         C:\Users\Owner\Anaconda3
+base                  *  C:\Users\Owner\anaconda3
+DjangoPrjectEnv          C:\Users\Owner\anaconda3\envs\DjangoPrjectEnv
+TensorFlowEnv            C:\Users\Owner\anaconda3\envs\TensorFlowEnv
+dbtEnv                   C:\Users\Owner\anaconda3\envs\dbtEnv
+intro-to-mongodb         C:\Users\Owner\anaconda3\envs\intro-to-mongodb
+myDjangoEnv              C:\Users\Owner\anaconda3\envs\myDjangoEnv
+quantum_compute          C:\Users\Owner\anaconda3\envs\quantum_compute
+
+
+(base) PS C:\WINDOWS\system32> conda create --name apacheSpark-env python=3.10
+#
+# To activate this environment, use
+#
+#     $ conda activate apacheSpark-env
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+
+(base) PS C:\WINDOWS\system32> conda activate apacheSpark-env
+(apacheSpark-env) PS C:\WINDOWS\system32>
+(apacheSpark-env) PS D:\Data_Engineering\PySpark\projects> pip install pyspark
+(apacheSpark-env) PS D:\Data_Engineering\PySpark\projects> pip install findspark
+(apacheSpark-env) PS D:\Data_Engineering\PySpark\projects> pip install jupyterlab
+
+## Install pyspark, JupyterLab;
+
+
+(.pyspark-env) D:\Data_Engineering\PySpark> pip install pyspark
+
+(.pyspark-env) D:\Data_Engineering\PySpark> pip install findspark
+
+(.pyspark-env) D:\Data_Engineering\PySpark> pip install jupyterlab
+
+ 
+## Launch JupyterLab and use PySpark;
+
+(apacheSpark-env) PS D:\Data_Engineering\PySpark\projects> jupyter-lab
+
+http://localhost:8888/lab
+
+%--------------------------------- PySpark-get-Started.ipynd ----------------------%
+# Set the PySpark environment variables
+import os
+os.environ['SPARK_HOME'] = r"D:\Data_Engineering\PySpark\Spark"
+os.environ['PYSPARK_DRIVER_PYTHON'] = "jupyter"
+os.environ['PYSPARK_DRIVER_PYTHON_OPTS'] = "lab"
+os.environ['PYSPARK_PYTHON'] = "python"
+
+# Import PySpark
+from pyspark.sql import SparkSession
+
+# Create a SparkSession
+spark = SparkSession.builder \
+    .appName("PySpark-Get-Started") \
+    .getOrCreate()
+	
+# Test the Setup
+data = [("Alice", 25), ("Bob", 30), ("Charlie", 35)]
+df = spark.createDataFrame(data, ["Name", "Age"])
+df.show()
+
++-------+---+
+|   Name|Age|
++-------+---+
+|  Alice| 25|
+|    Bob| 30|
+|Charlie| 35|
++-------+---+
+
+
+
+%--------------------------------------- SparkContext vs SparkSession -----------------------------------------------------%
+
+## SparkContext:
+- Represents the connection to a Spark cluster
+- Coordinates task execution across the cluster
+- Entry point in earlier versions of Spark (1.x)
+
+## SparkSession:
+- Unified entry point for interacting with Spark
+- Combines functionalities of SparkContext, SQLContext, HiveContext, and StreamingContext
+- Supports multiple programming languages (Scala , Java, Python, R)
+
+---Functionality Difference----
+## SparkContext;
+- Core functionality for low-level programming and cluster interaction
+- Creates RDDs (Resilient Distributed Datasets)
+- Performs transformations and defines actions
+
+## SparkSession;
+- Extends SparkContext functionality
+- Higher-level abstractions like DataFrames and Datasets
+- Supports structured querying using SQL or DataFrame API
+- Provides data source APIs, machine learning algorithms , and streaming capabilities.
+
+
+-------------Usage--------------
+
+## SparkContext;
+ - Explicit creation to interact with Spark cluster.
+ - Creates  RDDs, applies transformations, manages cluster resources
+ 
+ ## SparkSession;
+ - Recommended entry point.
+ - Unified entry point that manages SparkContext internally
+ - Simplifies interaction with Spark.
+ - Offers higher-level API for structured data processing using DataFrames and Datasets
+ 
+ 
+---------- Backward Compatibility ---------------------
+
+## SparkContext:
+- Fully supported for backward compatibility
+- Use in specific scenarios or with libraries / APIs reliant on it	
+
+
+## SparkSession
+- Recommended entry point since Spark 2.0
+- Provides a higher-level API and better integration with latest Spark features.
+
+-------------------- Conclusion ---------------------
+- SparkContext and SparkSession have different purpose and functionalities
+- SparkContext is low-level, while SparkSession is higher-level
+- SparkSession simplifies interaction and supports structured data processing
+- SparkContext is still supported for backward compatibility
+- SparkSession is the recommended entry  point for Spark applications. 
+
+
+%------------------------------------Creating SparkContext in PySpark ---------------------------%
+
+------------------------- Create-SparkContext.ipyn -------------------
+
+from pyspark import SparkContext
+
+# create a SparkContext object
+sc = SparkContext(appName="MySparkApplication")
+
+sc
+
+SparkContext
+
+Spark UI
+
+Versionv3.5.3Masterlocal[*]AppNameMySparkApplication
+
+# Shut down the current active SparkContext
+sc.stop()
+
+from pyspark.sql import SparkSession
+
+# Create a SparkSession
+
+spark = SparkSession.builder \
+    .appName("MySparkApplication") \
+    .getOrCreate()
+
+# Get the SparkContext from the SparkSession
+sc = spark.sparkContext
+
+sc
+
+# Shut down the current active SparkContext
+sc.stop()
+
+http://desktop-mh36lns:4040/jobs/
+
+
+-----------------------------------------------------------------------
+
+%------------------------------- Creating SparkSession in PySpark -------------------------%
+## With Custom Spark Configuration;
+
+---------------------------Create-SparkSession.ipyn ------------------------
+
+from pyspark.sql import SparkSession
+# Create a SparkSession
+
+spark = SparkSession.builder \
+    .appName("MySparkApplication") \
+    .config("spark.executor.memory", "2g") \
+    .config("spark.sql.shuffle.partitions", "4") \
+    .getOrCreate()
+	
+
+
+# Perfrom operations using the SparkSession
+
+spark
+
+SparkSession - in-memory
+
+SparkContext
+
+Spark UI
+
+Versionv3.5.3Masterlocal[*]AppNameMySparkApplication
+
+# Shut donw the current active SparkSession
+spark.stop()
+
+
+-----------------------------------------------------------------------------
+
+
+%-------------------------------  Spark RDD and RDD Operations -------------------------%
+
+## RDDs (Resilient Distributed Datasets)
+- Backbone of data processing in Spark
+- Distributed, fault-tolerant, and parallelizable data structured
+- Efficiency processes large datasets across a cluster
+- Key characteristics: immutable, distributed,resilient , lazily evaluated , fault-tolerant
+
+
+## RDD Characteristics:
+- Immutable: transformations create new RDDs
+- Distributed: data partitioned and processed in parallel
+- Resilient : Lineage tracks transformations for fault tolerance
+- Lazily evaluated; execution plan optimized, transformations evaluated when necessary.
+- fault-tolerant operations: map, filter, reduce , collect , count, save, etc.
+
+
+## Transformations
+- Create new RDDs by applying computation/manipulation
+- Lazy evaluation, linage graph
+- Example: map, filter, flatMap, reduceByKey, sortBy, join
+
+## Actions
+- Return results or perform actions on RDD, triggering execution
+- Eager evaluated, data movement/computation
+- Example: collect, count, first, take , save, foreach
+
+## How to create RDDs
+
+------------------------------------------- 04-RDD-Operations.ipynb -------------------------
+
+# Set the PySpark environment variables
+import os
+os.environ['SPARK_HOME'] = r"D:\Data_Engineering\PySpark\Spark"
+os.environ['PYSPARK_DRIVER_PYTHON'] = "jupyter"
+os.environ['PYSPARK_DRIVER_PYTHON_OPTS'] = "lab"
+os.environ['PYSPARK_PYTHON'] = "python"
+
+from pyspark.sql import SparkSession
+# Create a SparkSession
+
+
+spark = SparkSession.builder.appName("RDD-Demo").getOrCreate()
+
+
+# How to Create RDDs 
+numbers = [1, 2, 3, 4, 5]
+rdd = spark.sparkContext.parallelize(numbers)
+
+
+# collect action: Retrieve all elements of the RDD
+rdd.collect()
+
+
+# create an rDD from a list of tuples
+data =[("Alice", 25), ("Bob", 30), ("Charlie", 35), ("Alice", 40)]
+rdd = spark.sparkContext.parallelize(data)
+
+
+# Collect action : Retrieve all elements of the RDD
+print("All elements of the rdd: ", rdd.collect())
+
+# Count action: Count the number elements in the RDD
+count = rdd.count()
+print("The total number of elements in rdd:", count)
+
+# Action : Retrieve the first element of the RDD
+first_element = rdd.first()
+print("The first element of the rdd: " , first_element)
+
+# take action: Retrieve the n elements of the RDD
+taken_elements = rdd.take(2)
+print("The first two elements of the rdd: ", taken_elements)
+
+# Foreach action: Print each elememt of the RDD
+rdd.foreach(lambda x: print("x",x))
+
+--------------------------------------------------------------------------------------------------
+
+
+%-------------------------------  RDD Operations Transformations -------------------------%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
